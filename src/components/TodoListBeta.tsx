@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { FormEvent } from "react";
+import type { FormEvent } from "react";
 
 const TodoList = () => {
   const [tasks, setTasks] = useState([
@@ -19,29 +19,14 @@ const TodoList = () => {
     },
   ]);
 
-  const [newTask, setNewTask] = useState<{
+  const [, setNewTask] = useState<{
     category: string;
     taskName: string;
   } | null>(null);
 
   const taskNameRef = useRef<HTMLInputElement>(null);
   const categoryNameRef = useRef<HTMLInputElement>(null);
-
-  //   function handleInputChangeTask(event) {
-  //     setNewTask(event.target.value);
-  //   }
-
-  //   function handleInputChangeCategory(event) {
-  //     setCategory(event.target.value);
-  //   }
-  //   function addTask() {
-  //     if (newTask) {
-  //       setTask({ ...tasks, newTask });
-  //       console.log([...tasks, newTask]);
-  //       setCategory("");
-  //       setNewTask("");
-  //     }
-  //   }
+  const deleteTaskRef = useRef<HTMLInputElement>(null);
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
@@ -98,12 +83,25 @@ const TodoList = () => {
     );
   }
 
-  // console.log("Completed");
-  // const taskItem = el.target;
-  // taskItem.classList.add("list-group-item-success");
-  // if (taskItem.classList.contains("list-group-item-success")) {
-  //   setColor(!color);
-  // }
+  function deleteTask() {
+    const taskOnDelete = deleteTaskRef.current?.value.trim() ?? "";
+
+    if (taskOnDelete === taskOnDelete.toLowerCase()) {
+      setTasks((prevTasks) =>
+        prevTasks.map((t) => ({
+          ...t,
+          tasks: t.tasks.filter(
+            (task) => task.name.toLowerCase() !== taskOnDelete
+          ),
+        }))
+      );
+      if (deleteTaskRef.current) {
+        deleteTaskRef.current.value = "";
+      }
+    }
+    console.log(taskOnDelete);
+    console.log("Delete Task", taskNameRef.current?.value);
+  }
 
   const totalCompletedTasks = tasks
     .map((tList) => tList.tasks.filter((t) => t.completed).length)
@@ -141,12 +139,12 @@ const TodoList = () => {
               className="btn btn-primary"
               type="submit"
               style={{ width: "auto", marginRight: "5px" }}
-              //   onClick={addTask}
             >
               Add Task
             </button>
             <input
               type="text"
+              ref={deleteTaskRef}
               placeholder="Task ID to remove"
               className="form-control"
               style={{ width: "auto" }}
@@ -155,6 +153,7 @@ const TodoList = () => {
               className="btn btn-primary"
               type="submit"
               style={{ width: "auto" }}
+              onClick={() => deleteTask()}
             >
               Remove Task
             </button>
@@ -166,10 +165,12 @@ const TodoList = () => {
           <ol key={categoryIndex} className="list-group">
             <h2>
               {taskGroup.category} (
-              {Math.round(
-                (100 * taskGroup.tasks.filter((t) => t.completed).length) /
-                  taskGroup.tasks.length
-              )}
+              {taskGroup.tasks.length === 0
+                ? 0
+                : Math.round(
+                    (100 * taskGroup.tasks.filter((t) => t.completed).length) /
+                      taskGroup.tasks.length
+                  )}
               % completed, {taskGroup.tasks.length} tasks)
             </h2>
 
