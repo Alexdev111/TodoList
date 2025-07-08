@@ -1,4 +1,5 @@
-import TodoList from "./components/TodoList";
+// import TodoList from "./components/TodoList";
+import TodoListBeta from "./components/TodoListBeta";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 
@@ -6,7 +7,7 @@ function App() {
   return (
     <>
       <div>
-        <TodoList />
+        <TodoListBeta />
       </div>
     </>
   );

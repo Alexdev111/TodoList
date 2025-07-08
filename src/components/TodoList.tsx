@@ -1,14 +1,19 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 const TodoList = () => {
   const [tasks, setTask] = useState([
-    "Go to work",
-    "Drain the pool",
-    "Eat a pizza",
-    "Buy a new car",
+    {
+      category: "Food",
+      tasks: [],
+    },
+    { category: "Work", tasks: [] },
   ]);
-  const [newTask, setNewTask] = useState("");
+  const [newTask, setNewTask] = useState({});
   const [category, setCategory] = useState("");
+
+  const taskNameRef = useRef<HTMLInputElement>(null);
+  const categoryNameRef = useRef<HTMLInputElement>(null);
+  const task = { category: "", taskName: "" };
 
   function handleInputChangeTask(event) {
     setNewTask(event.target.value);
@@ -18,8 +23,8 @@ const TodoList = () => {
     setCategory(event.target.value);
   }
   function addTask() {
-    if (newTask.trim() !== "") {
-      setTask((t) => [...t, newTask]);
+    if (newTask) {
+      setTask({ ...tasks, newTask });
       console.log([...tasks, newTask]);
       setCategory("");
       setNewTask("");
@@ -89,7 +94,7 @@ const TodoList = () => {
           </div>
         </form>
       </div>
-      <div className="task-element">
+      {/* <div className="task-element">
         <h2>{category + " " + `(0% completed, ${tasks.length} tasks)`} </h2>
         <ol className="list-group">
           {tasks.map((task, index) => (
@@ -98,7 +103,7 @@ const TodoList = () => {
             </li>
           ))}
         </ol>
-      </div>
+      </div> */}
     </div>
   );
 };
