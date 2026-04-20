@@ -1,4 +1,4 @@
-import { useState, type SetStateAction } from "react";
+import { useState } from "react";
 
 type Task = {
   category: string;
