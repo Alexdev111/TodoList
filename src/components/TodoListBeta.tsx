@@ -6,15 +6,15 @@ const TodoList = () => {
     {
       category: "Food",
       tasks: [
-        { name: "Go to work", completed: false },
-        { name: "Drain the pool", completed: false },
+        { name: "Make lassagna", completed: false },
+        { name: "Eat sushi", completed: false },
       ],
     },
     {
       category: "Work",
       tasks: [
-        { name: "Work", completed: false },
-        { name: "More work", completed: false },
+        { name: "Make new project", completed: false },
+        { name: "Learn something new", completed: false },
       ],
     },
   ]);
@@ -39,7 +39,7 @@ const TodoList = () => {
       if (!taskName || !category) return;
       setTasks((prevTasks) => {
         const existingCategory = prevTasks.find(
-          (t) => t.category.toLowerCase() === category.toLowerCase()
+          (t) => t.category.toLowerCase() === category.toLowerCase(),
         );
 
         if (existingCategory) {
@@ -49,7 +49,7 @@ const TodoList = () => {
                   ...t,
                   tasks: [...t.tasks, { name: taskName, completed: false }],
                 }
-              : t
+              : t,
           );
         } else {
           return [
@@ -75,32 +75,33 @@ const TodoList = () => {
           ? {
               ...cat,
               tasks: cat.tasks.map((task, j) =>
-                j === taskIndex ? { ...task, completed: !task.completed } : task
+                j === taskIndex
+                  ? { ...task, completed: !task.completed }
+                  : task,
               ),
             }
-          : cat
-      )
+          : cat,
+      ),
     );
   }
 
   function deleteTask() {
-    const taskOnDelete = deleteTaskRef.current?.value.trim() ?? "";
+    const taskToDelete = deleteTaskRef.current?.value.trim().toLowerCase();
 
-    if (taskOnDelete === taskOnDelete.toLowerCase()) {
-      setTasks((prevTasks) =>
-        prevTasks.map((t) => ({
-          ...t,
-          tasks: t.tasks.filter(
-            (task) => task.name.toLowerCase() !== taskOnDelete
-          ),
-        }))
-      );
-      if (deleteTaskRef.current) {
-        deleteTaskRef.current.value = "";
-      }
+    if (!taskToDelete) return;
+
+    setTasks((prevTasks) =>
+      prevTasks.map((category) => ({
+        ...category,
+        tasks: category.tasks.filter(
+          (task) => task.name.toLowerCase() !== taskToDelete,
+        ),
+      })),
+    );
+
+    if (deleteTaskRef.current) {
+      deleteTaskRef.current.value = "";
     }
-    console.log(taskOnDelete);
-    console.log("Delete Task", taskNameRef.current?.value);
   }
 
   const totalCompletedTasks = tasks
@@ -145,15 +146,15 @@ const TodoList = () => {
             <input
               type="text"
               ref={deleteTaskRef}
-              placeholder="Task ID to remove"
+              placeholder="Task title to remove"
               className="form-control"
               style={{ width: "auto" }}
             />
             <button
+              type="button"
               className="btn btn-primary"
-              type="submit"
+              onClick={deleteTask}
               style={{ width: "auto" }}
-              onClick={() => deleteTask()}
             >
               Remove Task
             </button>
@@ -169,7 +170,7 @@ const TodoList = () => {
                 ? 0
                 : Math.round(
                     (100 * taskGroup.tasks.filter((t) => t.completed).length) /
-                      taskGroup.tasks.length
+                      taskGroup.tasks.length,
                   )}
               % completed, {taskGroup.tasks.length} tasks)
             </h2>
